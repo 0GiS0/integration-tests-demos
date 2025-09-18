@@ -36,24 +36,12 @@ on:
         default: ""
 
 jobs:
-  test:
+  reusable-steps:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       checks: write
       pull-requests: write
-
-    services:
-      if: inputs.needs-postgres
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: '--health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5'
 
     steps:
       - name: 📥 Checkout

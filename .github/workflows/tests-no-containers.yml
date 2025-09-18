@@ -2,12 +2,21 @@ name: "🖥️ Tests con GitHub Actions Services"
 
 on:
   push:
-    branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 jobs:
   test:
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: '--health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5'
+
     uses: ./.github/workflows/reusable-test-workflow.yml
     permissions:
       contents: read
