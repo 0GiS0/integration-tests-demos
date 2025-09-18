@@ -9,6 +9,10 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/reusable-test-workflow.yml
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     with:
       test-command: "npm run test:legacy:no-containers"
       test-name: "GitHub Actions Services Tests"
