@@ -2,9 +2,9 @@ name: "🧪🐳 Tests - Test-Containers"
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   test:
@@ -20,8 +20,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install deps
         run: npm ci
@@ -36,10 +36,10 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: '🧪🐳 Test-Containers Results'
-          path: 'test-results/junit.xml'
+          name: "🧪🐳 Test-Containers Results"
+          path: "test-results/junit.xml"
           reporter: jest-junit
-          fail-on-error: 'false'
+          fail-on-error: "false"
 
       - name: Add Test Summary to PR
         if: always()

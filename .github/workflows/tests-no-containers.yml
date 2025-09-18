@@ -52,10 +52,10 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: '🖥️ No Containers Tests Results'
-          path: 'test-results/junit.xml'
+          name: "🖥️ No Containers Tests Results"
+          path: "test-results/junit.xml"
           reporter: jest-junit
-          fail-on-error: 'false'
+          fail-on-error: "false"
 
       - name: Add Test Summary to PR
         if: always()
