@@ -43,7 +43,7 @@ jobs:
       contents: read
       checks: write
       pull-requests: write
-    
+
     services:
       postgres:
         image: postgres:16-alpine
@@ -58,7 +58,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
       contents: read
       checks: write
       pull-requests: write
-    
+
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
