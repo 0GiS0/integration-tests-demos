@@ -17,4 +17,3 @@ jobs:
       test-emoji: "🧪🐳"
       runner-emoji: "🧪🐳"
       node-version: "20"
-      needs-postgres: false
