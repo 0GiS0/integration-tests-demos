@@ -1,8 +1,5 @@
 {
   "name": "🧪 Test de integración",
-  // "dockerComposeFile": "compose.yml",
-  // "service": "app",
-  // "workspaceFolder": "/workspaces/test-containers-demo",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {

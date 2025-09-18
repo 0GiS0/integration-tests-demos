@@ -1,11 +1,62 @@
 # 🧪 Diferentes enfoques para pruebas de integración con Postgres
 
 [![🧪🐳 Test‑Containers](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-test-containers.yml?branch=main&label=Test%E2%80%91Containers&logo=docker)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-test-containers.yml)
-[![🐳🐳 docker-compose](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-docker-compose.yml?branch=main&label=docker%E2%80%91compose&logo=docker)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-docker-compose.yml)
-[![🖥️ GitHub Actions](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-no-containers.yml?branch=main&label=GitHub%20Actions&logo=postgresql)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-no-containers.yml)
-[![🧪🤡 mocks](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-mocks.yml?branch=main&label=mocks&logo=jest)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-mocks.yml)
+[![🐳 docker-compose](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-docker-compose.yml?branch=main&label=docker%E2%80%91compose&logo=docker)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-docker-compose.yml)
+[![🖥️ No Containers](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-no-containers.yml?branch=main&label=No%20Containers&logo=postgresql)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-no-containers.yml)
+[![🧪🤡 Mocks](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-mocks.yml?branch=main&label=mocks&logo=jest)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-mocks.yml)
+[![🧪🚀 GitHub Services](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-github-actions-services.yml?branch=main&label=GitHub%20Services&logo=github)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-github-actions-services.yml)
 
 ¡Hola developer 👋🏻! Este proyecto es un ejemplo mínimo de una API en Node.js (Express) que se integra con Postgres. El objetivo es mostrar diferentes enfoques para pruebas de integración con Postgres.
+
+## 🤔 ¿Por qué son importantes las pruebas de integración?
+
+Las pruebas de integración son cruciales para asegurar que los distintos componentes de una aplicación funcionen correctamente juntos. En aplicaciones que interactúan con bases de datos, como Postgres, es vital validar que las consultas SQL, migraciones y conexiones se comporten como se espera en un entorno real.
+
+El reto es encontrar un equilibrio entre:
+
+- **Fidelidad**: Usar una base de datos real (Postgres) en lugar de mocks.
+- **Reproducibilidad**: Asegurar que las pruebas se comporten igual en cualquier entorno (local, CI, etc.).
+- **Simplicidad**: Minimizar la complejidad de configuración y mantenimiento.
+
+Este repo presenta **5 enfoques diferentes**, ordenados de peor a mejor según estos criterios.
+
+## 📦 Requisitos
+
+- 🔧 Node.js 18+
+- 🐳 Docker (recomendado para la mayoría de enfoques)
+- Base de datos Postgres (opcional, solo para algunos enfoques)
+
+### 🧰 Dev Container
+
+Este repo incluye una configuración completa de Dev Container con:
+
+- **Aplicación + Postgres**: Usando Docker Compose (`.devcontainer/compose.yml`)
+- **Environment**: Node 20, Docker-in-Docker habilitado, permisos configurados
+- **Extensiones**: ESLint, Prettier, tema Monokai Pro
+- **Variables**: `TESTCONTAINERS_RYUK_DISABLED=true` para mejor compatibilidad
+
+**Servicios incluidos:**
+
+- `app`: Node.js con código mounted y acceso al socket Docker
+- `postgres`: PostgreSQL 16 disponible en `postgres:5432` dentro del container
+
+**Uso (VS Code):**
+
+1. Instala la extensión "Dev Containers"
+2. Abre el repo y pulsa "Reopen in Container"
+3. Todo se configura automáticamente
+
+## 🏁 Scripts disponibles
+
+- ▶️ `npm run dev`: Arranca la API con nodemon en `http://localhost:3000`
+- ▶️ `npm start`: Arranca la API sin nodemon
+- ✅ `npm test` o `npm run test:test-containers`: Test-Containers (recomendado)
+- 🐳 `npm run test:docker-compose`: Docker Compose
+- 🖥️ `npm run test:no-containers`: Sin contenedores (Postgres local/service)
+- 🧪 `npm run test:mock`: Tests con mocks (sin BD)
+- 🚀 `npm run test:github-services`: Simula GitHub Actions Services
+
+Todos los scripts incluyen reportes JUnit XML y sumarios automáticos.
 
 ## 🤔 ¿Por qué son importantes las pruebas de integración?
 
@@ -51,96 +102,118 @@ Cómo usarlo (VS Code):
 - 🖥️ `npm run test:legacy:no-containers`: Ejecuta el ejemplo legacy SIN contenedores (requiere Postgres local)
 - 🧪 `npm run test:mock`: Ejecuta el ejemplo con mocks (sin BD)
 
-## ⚡ Resumen rápido (con emojis)
+## ⚡ Resumen rápido de enfoques
 
-| Enfoque              | Comando                              | Fidelidad             | Reproducibilidad             | Complejidad          | Dependencias        | Tiempo típico | Uso recomendado                                                  |
-| -------------------- | ------------------------------------ | --------------------- | ---------------------------- | -------------------- | ------------------- | ------------- | ---------------------------------------------------------------- |
-| 🧪🤡 Mocks           | `npm run test:mock`                  | ❌ Baja (sin BD real) | ✅ Alta                      | ✅ Baja              | 🚫 Sin Docker/BD    | ⚡ ~2s        | Validar lógica HTTP/validaciones rápidamente                     |
-| 🖥️ GitHub Services   | `npm run test:legacy:no-containers`  | ✅ Alta (BD real)     | 🟡 Media (depende de runner) | 🟡 Media             | 🐘 Postgres service | ⚡ ~10s       | CI con PostgreSQL service, acepta variabilidad entre entornos    |
-| 🐳🐳 docker-compose  | `npm run test:legacy:docker-compose` | ✅ Alta (BD real)     | 🟡 Media (puertos fijos)     | 🟡 Media-Alta        | 🐳 Docker + Compose | 🐌 ~30s       | Reproducibilidad aceptable y control explícito del ciclo de vida |
-| 🧪🐳 Test-Containers | `npm run test:test-containers`       | ✅ Alta (BD real)     | ✅ Alta                      | 🟡 Media (lib. test) | 🐳 Docker           | 🚀 ~15s       | **Recomendado**: aislado, estable, mismo flujo local/CI          |
+| Enfoque                  | Comando                        | Fidelidad             | Reproducibilidad            | Complejidad          | Dependencias        | Tiempo típico | Uso recomendado                                                 |
+| ------------------------ | ------------------------------ | --------------------- | --------------------------- | -------------------- | ------------------- | ------------- | --------------------------------------------------------------- |
+| 🧪🤡 **Mocks**           | `npm run test:mock`            | ❌ Baja (sin BD real) | ✅ Alta                     | ✅ Baja              | 🚫 Sin Docker/BD    | ⚡ ~2s        | Validar lógica HTTP/validaciones rápidamente                    |
+| 🖥️ **No Containers**     | `npm run test:no-containers`   | ✅ Alta (BD real)     | 🟡 Media (depende de setup) | 🟡 Media             | 🐘 Postgres local   | ⚡ ~10s       | Desarrollo con Postgres local disponible                        |
+| 🚀 **GitHub Services**   | `npm run test:github-services` | ✅ Alta (BD real)     | 🟡 Media (CI específico)    | 🟡 Media             | 🐘 Postgres service | ⚡ ~8s        | CI con PostgreSQL service, simula GitHub Actions                |
+| 🐳 **Docker Compose**    | `npm run test:docker-compose`  | ✅ Alta (BD real)     | 🟡 Media (puertos fijos)    | 🟡 Media-Alta        | 🐳 Docker + Compose | 🐌 ~30s       | Control explícito del ciclo de vida, reproducibilidad aceptable |
+| 🧪🐳 **Test-Containers** | `npm run test:test-containers` | ✅ Alta (BD real)     | ✅ Alta                     | 🟡 Media (lib. test) | 🐳 Docker           | 🚀 ~15s       | **Recomendado**: aislado, estable, mismo flujo local/CI         |
 
-**Notas sobre tiempo:**
+**Notas:**
 
 - ⚡ **Mocks**: Más rápidos, sin setup de BD
 - 🚀 **Test-Containers**: Balance ideal entre velocidad y fidelidad
 - 🐌 **Docker Compose**: Más lento por setup/teardown manual
-- 🖥️ **GitHub Services**: Rápido en CI, variable en local
+- 🖥️ **Servicios**: Rápido en CI, depende de configuración local
 
 **Todos los enfoques incluyen:**
 
-- ⏱️ Medición automática de tiempo de ejecución
-- 📊 Reportes detallados con `dorny/test-reporter`
-- 📝 Sumarios visuales en PRs con emojis
-- 🎯 Resultados consistentes: "X passed, Y failed, Z skipped"
+- 📊 Reportes JUnit XML automáticos con `jest-junit`
+- � Resultados detallados con `dorny/test-reporter`
+- 📝 Sumarios visuales con emojis y tablas en PRs/Actions
+- 🎯 Casos de test unificados: GET /health, POST+GET /todos, GET /todos
 
-## 🧱 Estructura
+## 🧱 Estructura del proyecto
 
-- 🚪 `src/index.js`: Punto de entrada del servidor
-- 🧩 `src/app.js`: Configuración de Express y rutas
-- 🐘 `src/db.js`: Cliente de Postgres y migración mínima (`initDb`)
-- 📍 `src/routes/todos.js`: Rutas de ejemplo `/todos`
-- 🧪🐳 `tests-test-containers/todos.test-containers.int.test.js`: Pruebas de integración con Postgres en contenedor (Test‑Containers)
-- 📄 `.env.example`: Variables de entorno de ejemplo
+```
+├── � src/
+│   ├── 🚪 index.js              # Punto de entrada del servidor
+│   ├── 🧩 app.js                # Configuración de Express y rutas
+│   ├── 🐘 db.js                 # Cliente de Postgres y migraciones
+│   └── � routes/
+│       └── 📍 todos.js          # Rutas CRUD de /todos
+├── 📁 tests/                    # Tests organizados por estrategia
+│   ├── 📁 mock/                 # Tests con mocks (sin BD)
+│   ├── 📁 no-containers/        # Tests con Postgres local
+│   ├── � docker-compose/       # Tests con docker-compose
+│   └── 📁 test-containers/      # Tests con Test-Containers
+├── 📁 scripts/
+│   └── 🧾 generate-test-summary.mjs  # Script para generar sumarios
+├── 📁 .devcontainer/
+│   ├── ⚙️ devcontainer.json     # Configuración del dev container
+│   └── 🐳 compose.yml           # Docker Compose para dev (app + postgres)
+├── 📁 .github/workflows/
+│   ├── 🔄 reusable-test-workflow.yml  # Workflow reusable central
+│   ├── 🧪🐳 tests-test-containers.yml
+│   ├── 🐳 tests-docker-compose.yml
+│   ├── 🖥️ tests-no-containers.yml
+│   ├── 🧪🤡 tests-mocks.yml
+│   └── 🚀 tests-github-actions-services.yml
+├── 📄 api.http                  # Batería de llamadas HTTP para testing manual
+├── 📄 .env.example              # Variables de entorno de ejemplo
+└── 📄 package.json              # Dependencias y scripts
+```
 
-### 🏗️ CI (GitHub Actions)
+## 🎯 Casos de test unificados
 
-**Workflows reusables para mayor mantenibilidad:**
+Todos los enfoques de testing cubren exactamente los mismos 3 casos:
 
-Este proyecto utiliza un **workflow reusable** (`.github/workflows/reusable-test-workflow.yml`) que centraliza toda la lógica común de testing, eliminando duplicación de código y facilitando el mantenimiento.
+1. **🏥 GET /health** - Verificar que la API responde correctamente
+2. **📝 POST /todos + GET /todos** - Crear una tarea y verificar persistencia
+3. **📋 GET /todos** - Verificar que devuelve un array (cobertura básica)
 
-**Workflow reusable incluye:**
+Esto garantiza comparabilidad entre enfoques y cobertura consistente.
 
-- 📥 Checkout automático con cache inteligente
-- ⚙️ Setup de Node.js configurable (default: v20)
-- 📦 Instalación automática de dependencias
-- ⏰ Medición automática de tiempo de ejecución
-- � PostgreSQL service condicional (para tests que lo requieren)
-- 📊 Generación de reportes JUnit XML con `jest-junit`
-- 📈 Publicación de resultados con `dorny/test-reporter`
-- 📝 Sumario automático en PR con tiempo de ejecución
-- 🎨 Emojis visuales para fácil identificación
+## 🏗️ CI/CD con GitHub Actions
 
-**Workflows individuales:**
+### 🔄 Workflow Reusable
+
+Este proyecto utiliza un **workflow reusable** centralizado (`.github/workflows/reusable-test-workflow.yml`) que elimina duplicación y facilita el mantenimiento:
+
+**Características:**
+
+- 📥 Setup automático: checkout, cache, Node.js, dependencias
+- 🐘 PostgreSQL service condicional (cuando se necesita)
+- 📊 Generación automática de reportes JUnit XML
+- 📈 Publicación con `dorny/test-reporter`
+- 📝 Sumario visual con tablas y emojis generado por `scripts/generate-test-summary.mjs`
+- ⚙️ Configuración por parámetros: comando, nombre, emojis, versión Node
+
+**Workflows individuales (solo ~10 líneas cada uno):**
 
 - 🧪🐳 `tests-test-containers.yml`: Test-Containers (recomendado)
-- 🐳🐳 `tests-docker-compose.yml`: Docker Compose legacy
-- 🖥️ `tests-no-containers.yml`: GitHub Actions Services con PostgreSQL
+- 🐳 `tests-docker-compose.yml`: Docker Compose
+- 🖥️ `tests-no-containers.yml`: Sin contenedores (Postgres local)
 - 🧪🤡 `tests-mocks.yml`: Tests con mocks
+- 🚀 `tests-github-actions-services.yml`: Simula GitHub Actions Services
 
-**Características de los reportes:**
+### 📊 Reportes automáticos
 
-- ✅ Resultados detallados: "X passed, Y failed, Z skipped"
-- ⏱️ Tiempo de ejecución: formato "MM:SS (Xs)"
-- � Tablas con breakdown por test suite
-- 🎯 Lista individual de tests con checkmarks verdes
-- 📁 Enlaces a archivos de resultados XML
-- 🚨 Reportes incluso cuando los tests fallan
+**JUnit XML + Test Reporter:**
 
-**Ejemplo de sumario generado:**
+- Todos los tests generan `test-results/junit.xml` con `jest-junit`
+- `dorny/test-reporter@v1` procesa y muestra resultados detallados
+- Funciona incluso cuando los tests fallan
 
-```
+**Sumarios visuales en PR:**
+
+```markdown
 ## 🧪🐳 Test-Containers Results
-⏱️ Tiempo de ejecución: 01:25 (85s)
 
-✅ Tests ejecutados correctamente
-📁 Archivo de resultados: test-results/junit.xml
+| Suite                          | Pasados | Fallados | Tiempo (s) |
+| ------------------------------ | ------- | -------- | ---------- |
+| 🧪🐳 todos.test-containers.int | 3       | 0        | 0.245      |
+| **TOTAL**                      | **3**   | **0**    |            |
 ```
 
-### 🤖 Dependabot
+### ➕ Agregar nuevos tipos de tests
 
-Este repositorio está configurado con Dependabot para mantener al día:
+Gracias al workflow reusable, es extremadamente sencillo:
 
-- Acciones de GitHub (`.github/workflows/`): fichero `.github/dependabot.yml` → `package-ecosystem: github-actions` (semanal)
-- Dependencias npm: `.github/dependabot.yml` → `package-ecosystem: npm` (semanal)
-
-Puedes ajustar frecuencia, etiquetas y límites de PRs en `.github/dependabot.yml`.
-
-## � Agregar nuevos tipos de tests
-
-Gracias al workflow reusable, agregar un nuevo tipo de test es extremadamente sencillo:
-
-### 1. Crear el script de test en `package.json`
+**1. Script en `package.json`:**
 
 ```json
 {
@@ -150,10 +223,9 @@ Gracias al workflow reusable, agregar un nuevo tipo de test es extremadamente se
 }
 ```
 
-### 2. Crear el workflow (solo 10 líneas)
+**2. Workflow (solo 10 líneas):**
 
 ```yaml
-# .github/workflows/tests-nuevo.yml
 name: "🆕 Tests Nuevo Enfoque"
 on: [push, pull_request]
 jobs:
@@ -164,140 +236,203 @@ jobs:
       test-name: "Nuevo Enfoque Tests"
       test-emoji: "🆕"
       runner-emoji: "🆕"
-      node-version: "20"
       needs-postgres: true # si requiere BD
-      database-url: "postgres://postgres:postgres@127.0.0.1:5432/postgres"
 ```
 
-### 3. Configuración automática incluida
+**3. Auto-configuración incluida:** setup, reportes, sumario visual
 
-El workflow reusable se encarga automáticamente de:
+### 🤖 Dependabot
 
-- ✅ Setup del entorno
-- ✅ Medición de tiempo
-- ✅ Generación de reportes
-- ✅ Sumario visual en PR
-- ✅ PostgreSQL si se necesita
+Configurado para mantener actualizadas:
 
-## 📊 Configuración de reportes de tests
+- **GitHub Actions** (`.github/workflows/`): semanalmente
+- **Dependencias npm**: semanalmente
+- Configuración en `.github/dependabot.yml`
 
-Este proyecto está configurado para generar reportes detallados de tests:
+## 🔧 API para testing manual
 
-### 🎯 Jest + JUnit XML
+Incluye `api.http` con batería completa de llamadas:
 
-- **Dependencia**: `jest-junit` para generar reportes XML compatibles con GitHub Actions
-- **Configuración**: En `package.json` bajo `jest-junit`
-- **Archivo de salida**: `test-results/junit.xml`
-- **Reporters**: Todos los scripts de test usan `--reporters=default --reporters=jest-junit`
+- 🏥 **Health checks**: GET /health
+- 📝 **CRUD básico**: POST /todos, GET /todos
+- ❌ **Casos de error**: validaciones, 404s, 500s
+- 🧪 **Edge cases**: caracteres especiales, títulos largos
+- 📊 **Verificaciones**: conteos, limpieza
 
-### 📈 GitHub Actions Test Reporter
-
-- **Action**: `dorny/test-reporter@v1` procesa los archivos JUnit XML
-- **Características**: Tablas detalladas, contadores, iconos visuales
-- **Ejecución**: Siempre se ejecuta (incluso si los tests fallan)
-- **Permisos**: `contents: read`, `checks: write`, `pull-requests: write`
-
-### 🎨 Sumarios visuales en PR
-
-Cada workflow genera automáticamente un sumario que incluye:
-
-```
-## 🧪🐳 Test-Containers Results
-⏱️ Tiempo de ejecución: 01:25 (85s)
-
-✅ Tests ejecutados correctamente
-📁 Archivo de resultados: test-results/junit.xml
-```
-
-### 🔧 API para testing manual
-
-También incluye un archivo `api.http` con una batería completa de llamadas para testing manual:
-
-- 🏥 Health checks
-- 📝 CRUD de TODOs (casos felices)
-- ❌ Casos de error y validaciones
-- 🧪 Edge cases (caracteres especiales, títulos largos)
-- 📊 Verificaciones finales
+Compatible con VS Code REST Client extension.
 
 ## 🔐 Variables de entorno
 
-Puedes crear un archivo `.env` copiando `.env.example`:
+**Soporte flexible:**
+
+- `DATABASE_URL`: URL completa (preferida)
+- Variables individuales: `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`
+- Detección automática de entorno: `postgres` (devcontainer) vs `localhost` (local)
+
+**Setup:**
 
 ```bash
 cp .env.example .env
+# Editar .env según tu configuración
 ```
 
-La app soporta `DATABASE_URL` o las variables `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`.
+## 🚀 Ejecución
 
-## 🚀 Ejecutar
+### Desarrollo local
 
-1. Instala dependencias:
+**Con dev container (recomendado):**
+
+1. Abrir en VS Code → "Reopen in Container"
+2. Todo configurado automáticamente (app + postgres)
+
+**Sin dev container:**
 
 ```bash
 npm install
+npm run dev  # Requiere Postgres local
 ```
 
-2. Para desarrollo local (si tienes un Postgres disponible) arranca el server:
+### Tests
+
+**Recomendado (Test-Containers):**
 
 ```bash
-npm run dev
+npm test  # o npm run test:test-containers
+# Requiere Docker ejecutándose
 ```
 
-3. Para ejecutar pruebas (requiere Docker en ejecución):
+**Otros enfoques:**
 
 ```bash
-npm test
+npm run test:mock           # Sin dependencias
+npm run test:no-containers  # Requiere Postgres local
+npm run test:docker-compose # Requiere Docker + Compose
+npm run test:github-services # Simula GitHub Actions
 ```
 
-Las pruebas levantan automáticamente un contenedor de Postgres, ejecutan una migración mínima para crear la tabla `todos`, y llaman a los endpoints `POST /todos` y `GET /todos` para verificar el flujo end-to-end.
+## 🧭 Estrategias de pruebas (ordenadas por recomendación)
 
-## 🧭 Estrategias de pruebas (de peor a mejor)
+### 1. 🧪🐳 Test-Containers (⭐ **RECOMENDADO**)
 
-### 1) 🧪 Mocks (peor fidelidad)
+- **Comando**: `npm run test:test-containers` o `npm test`
+- **Ubicación**: `tests/test-containers/`
+- **Configuración**: Usa `@testcontainers/postgresql`
 
-- Comando: `npm run test:mock`
-- Código: `tests-mock/` + `jest.mocks.config.js`
-- Pros:
-  - Ultra rápidos, no dependen de servicios externos.
-  - Ideales para validar lógica HTTP/validaciones y flujos felices/errores controlados.
-- Contras:
-  - No validan SQL real ni el esquema de la BD.
-  - No detectan problemas de integración (conexión, migraciones, permisos, etc.).
+**✅ Pros:**
 
-### 2) 🖥️ Sin contenedores (peor reproducibilidad)
+- Contenedores efímeros por test suite con puertos aleatorios
+- Readiness integrado, limpieza automática, menos flakiness
+- Misma experiencia en desarrollo local y CI
+- Aislamiento perfecto entre ejecuciones
 
-- Comando: `npm run test:legacy:no-containers`
-- Código: `tests-legacy-no-containers/` + `jest.no-containers.config.js`
-- Requisitos: Postgres local en `127.0.0.1:5432` (ajustable en `01_setEnv.js`).
-- Pros:
-  - Sencillo si ya tienes Postgres local.
-  - Arranque rápido si el servicio ya está activo.
-- Contras:
-  - Reproducibilidad baja entre máquinas.
-  - Flaky por estado residual y diferencias locales.
-  - No aísla puertos ni limpia automáticamente.
+**❌ Contras:**
 
-### 3) 🐳 docker-compose (mejor, pero con orquestación manual)
+- Requiere Docker ejecutándose
+- Arranque algo más lento que mocks (~15s vs ~2s)
 
-- Comando: `npm run test:legacy:docker-compose`
-- Código: `tests-legacy-docker-compose/` + `jest.docker-compose.config.js`
-- Flujo ordenado: `01_setEnv.js` → `02_globalSetup.js` (up + readiness) → `03_*.test.js` → `04_globalTeardown.js` (down -v)
-- Pros:
-  - Reproducible y cercano a producción.
-  - Control explícito del ciclo de vida.
-- Contras:
-  - Necesitas scripts para up/ready/down y esperar readiness SQL.
-  - Puertos fijos (colisiones posibles).
-  - Más mantenimiento en CI/local.
+**🎯 Cuándo usar:** Tu enfoque por defecto para tests de integración
 
-### 4) 🧪🐳 Test‑Containers (recomendado)
+---
 
-- Comando: `npm run test:test-containers`
-- Código: `tests-test-containers/` (archivo `todos.test-containers.int.test.js`)
-- Pros:
-  - Contenedores efímeros por test suite, puertos aleatorios.
-  - Readiness integrado; menos flakiness y limpieza automática.
-  - Misma experiencia local y CI.
-- Contras:
-  - Requiere Docker en ejecución.
-  - Arranque algo más lento que mocks (pero mucho más fiable que legacy).
+### 2. 🐳 Docker Compose
+
+- **Comando**: `npm run test:docker-compose`
+- **Ubicación**: `tests/docker-compose/`
+- **Configuración**: Orchestración manual con setup/teardown
+
+**✅ Pros:**
+
+- Control explícito del ciclo de vida de contenedores
+- Reproducible y cercano a producción
+- Útil para debugging de problemas de integración
+
+**❌ Contras:**
+
+- Setup/teardown manual más lento (~30s)
+- Puertos fijos (posibles colisiones)
+- Más mantenimiento y complejidad
+
+**🎯 Cuándo usar:** Cuando necesitas control granular del entorno o debugging específico
+
+---
+
+### 3. 🚀 GitHub Actions Services
+
+- **Comando**: `npm run test:github-services`
+- **Ubicación**: `tests/no-containers/` (reutiliza casos)
+- **Configuración**: Simula el comportamiento de GitHub Actions Services
+
+**✅ Pros:**
+
+- Rápido arranque (~8s)
+- Simula exactamente el comportamiento en CI
+- Útil para verificar configuración antes de push
+
+**❌ Contras:**
+
+- Específico para entorno GitHub Actions
+- Reproducibilidad limitada fuera de ese contexto
+
+**🎯 Cuándo usar:** Verificar localmente cambios que van a ejecutarse en GitHub Actions
+
+---
+
+### 4. 🖥️ Sin contenedores (No Containers)
+
+- **Comando**: `npm run test:no-containers`
+- **Ubicación**: `tests/no-containers/`
+- **Configuración**: Requiere Postgres local o remoto
+
+**✅ Pros:**
+
+- Arranque muy rápido si Postgres ya está activo (~10s)
+- Sencillo si ya tienes Postgres disponible localmente
+- Útil en desarrollo con BD persistente
+
+**❌ Contras:**
+
+- Reproducibilidad baja entre entornos
+- Possible state residual entre ejecuciones
+- Dependiente de configuración externa
+
+**🎯 Cuándo usar:** Desarrollo rápido con Postgres local disponible
+
+---
+
+### 5. 🧪🤡 Mocks (Desarrollo/Unit Tests)
+
+- **Comando**: `npm run test:mock`
+- **Ubicación**: `tests/mock/`
+- **Configuración**: Mockea completamente `src/db.js`
+
+**✅ Pros:**
+
+- Ultra rápidos (~2s), sin dependencias externas
+- Perfectos para validar lógica HTTP y validaciones
+- Ideales para TDD y feedback rápido
+
+**❌ Contras:**
+
+- No validan SQL real ni esquema de BD
+- No detectan problemas de integración
+- Limitados a lógica de aplicación
+
+**🎯 Cuándo usar:** Unit tests, validación de lógica de negocio, TDD, CI rápido
+
+---
+
+## 🎯 Guía de decisión rápida
+
+```
+¿Necesitas validar integración con BD real?
+├─ NO  → 🧪🤡 Mocks (ultra rápido, lógica de app)
+└─ SÍ  → ¿Tienes Docker disponible?
+   ├─ NO  → 🖥️ Sin contenedores (requiere Postgres local)
+   └─ SÍ  → ¿Necesitas control granular del entorno?
+      ├─ SÍ → 🐳 Docker Compose (debugging, casos especiales)
+      └─ NO → ¿Ejecutando en GitHub Actions?
+         ├─ SÍ → 🚀 GitHub Services (simula CI exacto)
+         └─ NO → 🧪🐳 Test-Containers ⭐ **RECOMENDADO**
+```
+
+**Resumen:** Usa **Test-Containers** para la mayoría de casos, **Mocks** para feedback rápido, y los otros enfoques para casos específicos.
