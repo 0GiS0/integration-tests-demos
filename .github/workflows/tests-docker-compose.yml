@@ -14,25 +14,25 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - name: Checkout
+      - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: ⚙️ Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install deps
+      - name: 📦 Install deps
         run: npm ci
 
-      - name: Run tests (legacy docker-compose)
+      - name: 🐳 Run tests (legacy docker-compose)
         env:
           NODE_ENV: test
           NODE_OPTIONS: --experimental-vm-modules
         run: npm run test:legacy:docker-compose
 
-      - name: Publish Test Results
+      - name: 📊 Publish Test Results
         uses: dorny/test-reporter@v1
         if: always()
         with:
@@ -41,7 +41,7 @@ jobs:
           reporter: jest-junit
           fail-on-error: 'false'
 
-      - name: Add Test Summary to PR
+      - name: 📝 Add Test Summary to PR
         if: always()
         run: |
           echo "## 🐳 Docker Compose Tests Results" >> $GITHUB_STEP_SUMMARY
