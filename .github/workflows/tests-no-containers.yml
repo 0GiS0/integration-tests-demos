@@ -1,0 +1,19 @@
+name: "🖥️ Tests con GitHub Actions Services"
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-test-workflow.yml
+    with:
+      test-command: "npm run test:legacy:no-containers"
+      test-name: "GitHub Actions Services Tests"
+      test-emoji: "🖥️"
+      runner-emoji: "🖥️"
+      node-version: "20"
+      needs-postgres: true
+      database-url: "postgres://postgres:postgres@127.0.0.1:5432/postgres"
