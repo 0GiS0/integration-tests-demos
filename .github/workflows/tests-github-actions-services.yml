@@ -38,9 +38,6 @@ jobs:
       - name: 📦 Install deps
         run: npm ci
 
-      - name: ⏰ Start timer
-        run: echo "TEST_START_TIME=$(date +%s)" >> $GITHUB_ENV
-
       - name: 🖥️ Run tests (legacy no containers)
         env:
           NODE_ENV: test
@@ -48,14 +45,6 @@ jobs:
           # apuntar a service de GH Actions (localhost:5432)
           DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
         run: npm run test:no-containers
-
-      - name: ⏱️ Calculate test duration
-        if: always()
-        run: |
-          TEST_END_TIME=$(date +%s)
-          TEST_DURATION=$((TEST_END_TIME - TEST_START_TIME))
-          echo "TEST_DURATION_SECONDS=$TEST_DURATION" >> $GITHUB_ENV
-          echo "TEST_DURATION_FORMATTED=$(printf '%02d:%02d' $((TEST_DURATION/60)) $((TEST_DURATION%60)))" >> $GITHUB_ENV
 
       - name: 📊 Publish Test Results
         uses: dorny/test-reporter@v1
@@ -65,17 +54,8 @@ jobs:
           path: "test-results/junit.xml"
           reporter: jest-junit
           fail-on-error: "false"
-
-      - name: 📝 Add Test Summary to PR
+      - name: 🧾 Generate Markdown Test Summary
         if: always()
         run: |
           echo "## 🖥️ No Containers Tests Results" >> $GITHUB_STEP_SUMMARY
-          echo "⏱️ **Tiempo de ejecución:** $TEST_DURATION_FORMATTED (${TEST_DURATION_SECONDS}s)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f "test-results/junit.xml" ]; then
-            echo "✅ Tests ejecutados correctamente" >> $GITHUB_STEP_SUMMARY
-            echo "📁 Archivo de resultados: \`test-results/junit.xml\`" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ No se pudo generar el archivo de resultados" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+          node scripts/generate-test-summary.mjs >> $GITHUB_STEP_SUMMARY
