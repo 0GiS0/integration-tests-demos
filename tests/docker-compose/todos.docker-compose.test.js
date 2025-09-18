@@ -1,4 +1,3 @@
-// 03_todos.legacy.docker-compose.test.js
 // Prueba de integración usando docker-compose (sin Testcontainers)
 import request from "supertest";
 import { initDb, closePool } from "../../src/db.js";
@@ -12,8 +11,13 @@ afterAll(async () => {
   await closePool();
 }, 120000);
 
-it("LEGACY-DC: POST /todos then GET /todos should include created todo", async () => {
-  const title = `Legacy-DC Task ${Date.now()}`;
+it("El endpoint /health devuelve ok", async () => {
+  const res = await request(app).get("/health").expect(200);
+  expect(res.body).toEqual({ status: "ok" });
+});
+
+it("Si creo una tarea debería poder recuperar la misma", async () => {
+  const title = `DC Task ${Date.now()}`;
   const postRes = await request(app).post("/todos").send({ title }).expect(201);
   expect(postRes.body).toMatchObject({ title, completed: false });
 

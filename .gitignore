@@ -142,3 +142,4 @@ vite.config.ts.timestamp-*
 
 
 tests-results
+test-results/junit.xml
