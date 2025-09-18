@@ -23,7 +23,7 @@ Este repo presenta 4 enfoques diferentes, ordenados de peor a mejor según estos
 
 - 🔧 Node.js 18+
 - Base de datos Postgres (opcional, solo para algunos enfoques)
-- 🐳 Docker (opcional, pero recomendado para los enfoques con contenedores
+- 🐳 Docker (opcional, pero recomendado para los enfoques con contenedores)
 
 O si no quieres tener que instalar nada en tu máquina local puedes abrir este repo dentro de un contenedor.
 
