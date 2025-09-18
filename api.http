@@ -1,0 +1,126 @@
+### Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### ====================================
+### 🏥 HEALTH CHECK
+### ====================================
+
+### Verificar estado de la API
+GET {{baseUrl}}/health
+
+### ====================================
+### 📝 TODOS - CRUD Operations
+### ====================================
+
+### 1. Obtener todos los TODOs (Lista vacía inicialmente)
+GET {{baseUrl}}/todos
+Accept: {{contentType}}
+
+### 2. Crear un nuevo TODO
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "Aprender Testcontainers"
+}
+
+### 3. Crear otro TODO
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "Configurar Docker Compose para dev container"
+}
+
+### 4. Crear TODO con título más largo
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "Implementar tests de integración con PostgreSQL usando Testcontainers"
+}
+
+### 5. Obtener todos los TODOs (Ahora debería mostrar los creados)
+GET {{baseUrl}}/todos
+Accept: {{contentType}}
+
+### ====================================
+### ❌ CASOS DE ERROR - Validaciones
+### ====================================
+
+### 6. Intentar crear TODO sin título (Error 400)
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+}
+
+### 7. Intentar crear TODO con título vacío (Error 400)
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": ""
+}
+
+### 8. Intentar crear TODO con título no string (Error 400)
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": 123
+}
+
+### 9. Intentar crear TODO con título null (Error 400)
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": null
+}
+
+### ====================================
+### 🧪 CASOS DE PRUEBA ADICIONALES
+### ====================================
+
+### 10. TODO con caracteres especiales
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "TODO con émojis 🚀 y acentós ñáéíóú"
+}
+
+### 11. TODO con título muy largo
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "Este es un título extremadamente largo para probar cómo maneja la API títulos que podrían ser problemáticos debido a su extensión considerable y verificar que no hay problemas de truncamiento o límites de caracteres en la base de datos PostgreSQL"
+}
+
+### 12. Verificar endpoint inexistente (Error 404)
+GET {{baseUrl}}/nonexistent
+
+### 13. Método no permitido en endpoint existente
+PUT {{baseUrl}}/todos
+
+### 14. Petición con JSON malformado (Error 400)
+POST {{baseUrl}}/todos
+Content-Type: {{contentType}}
+
+{
+  "title": "TODO incompleto"
+  // JSON malformado sin coma
+
+### ====================================
+### 📊 VERIFICACIÓN FINAL
+### ====================================
+
+### 15. Obtener lista final de TODOs
+GET {{baseUrl}}/todos
+Accept: {{contentType}}
+
+### 16. Verificar que el health check sigue funcionando
+GET {{baseUrl}}/health

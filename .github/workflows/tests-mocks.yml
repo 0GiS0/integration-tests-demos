@@ -1,0 +1,29 @@
+name: "🧪 Tests - mocks"
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run tests (mocks)
+        env:
+          NODE_ENV: test
+          NODE_OPTIONS: --experimental-vm-modules
+        run: npm run test:mock
