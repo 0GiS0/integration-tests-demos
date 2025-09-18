@@ -12,7 +12,7 @@ jobs:
       checks: write
       pull-requests: write
     with:
-      test-command: "npm run test:legacy:docker-compose"
+      test-command: "npm run test:docker-compose"
       test-name: "Docker Compose Tests"
       test-emoji: "🐳🐳"
       runner-emoji: "🐳"
