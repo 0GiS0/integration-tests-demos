@@ -36,24 +36,91 @@ on:
         default: ""
 
 jobs:
-  test:
+  test-with-postgres:
+    if: ${{ inputs.needs-postgres }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       checks: write
       pull-requests: write
-
+    
     services:
       postgres:
-        image: ${{ inputs.needs-postgres && 'postgres:16-alpine' || '' }}
+        image: postgres:16-alpine
         env:
-          POSTGRES_PASSWORD: ${{ inputs.needs-postgres && 'postgres' || '' }}
-          POSTGRES_USER: ${{ inputs.needs-postgres && 'postgres' || '' }}
-          POSTGRES_DB: ${{ inputs.needs-postgres && 'postgres' || '' }}
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
         ports:
-          - ${{ inputs.needs-postgres && '5432:5432' || '' }}
-        options: ${{ inputs.needs-postgres && '--health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5' || '' }}
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
 
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ⏰ Start timer
+        run: echo "TEST_START_TIME=$(date +%s)" >> $GITHUB_ENV
+
+      - name: ${{ inputs.runner-emoji }} Run tests (${{ inputs.test-name }})
+        env:
+          NODE_ENV: test
+          NODE_OPTIONS: --experimental-vm-modules
+          DATABASE_URL: ${{ inputs.database-url }}
+        run: ${{ inputs.test-command }}
+
+      - name: ⏱️ Calculate test duration
+        if: always()
+        run: |
+          TEST_END_TIME=$(date +%s)
+          TEST_DURATION=$((TEST_END_TIME - TEST_START_TIME))
+          echo "TEST_DURATION_SECONDS=$TEST_DURATION" >> $GITHUB_ENV
+          echo "TEST_DURATION_FORMATTED=$(printf '%02d:%02d' $((TEST_DURATION/60)) $((TEST_DURATION%60)))" >> $GITHUB_ENV
+
+      - name: 📊 Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: "${{ inputs.test-emoji }} ${{ inputs.test-name }} Results"
+          path: "test-results/junit.xml"
+          reporter: jest-junit
+          fail-on-error: "false"
+
+      - name: 📝 Add Test Summary to PR
+        if: always()
+        run: |
+          echo "## ${{ inputs.test-emoji }} ${{ inputs.test-name }} Results" >> $GITHUB_STEP_SUMMARY
+          echo "⏱️ **Tiempo de ejecución:** $TEST_DURATION_FORMATTED (${TEST_DURATION_SECONDS}s)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "test-results/junit.xml" ]; then
+            echo "✅ Tests ejecutados correctamente" >> $GITHUB_STEP_SUMMARY
+            echo "📁 Archivo de resultados: \`test-results/junit.xml\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ No se pudo generar el archivo de resultados" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+  test-without-postgres:
+    if: ${{ !inputs.needs-postgres }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
