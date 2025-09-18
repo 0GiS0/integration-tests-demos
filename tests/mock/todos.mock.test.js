@@ -10,7 +10,7 @@ const initDbMock = jest.fn();
 const closePoolMock = jest.fn();
 const getPoolMock = jest.fn();
 
-jest.unstable_mockModule('../src/db.js', () => ({
+jest.unstable_mockModule('../../src/db.js', () => ({
   query: queryMock,
   initDb: initDbMock,
   closePool: closePoolMock,
@@ -18,7 +18,7 @@ jest.unstable_mockModule('../src/db.js', () => ({
 }));
 
 // 2) Importamos la app después de definir el mock
-const { default: app } = await import('../src/app.js');
+const { default: app } = await import('../../src/app.js');
 
 beforeEach(() => {
   queryMock.mockReset();

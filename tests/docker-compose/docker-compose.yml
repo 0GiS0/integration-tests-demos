@@ -2,14 +2,14 @@ version: '3.8'
 services:
   db:
     image: postgres:16-alpine
+    network_mode: host
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
-    ports:
-      - "5434:5432" # exponemos en 5434 para no chocar con instalaciones locales
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -p 5435"]
       interval: 2s
       timeout: 2s
       retries: 30
+    command: postgres -p 5435

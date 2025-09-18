@@ -1,8 +1,9 @@
 {
   "name": "🧪 Test de integración",
-  "dockerComposeFile": "compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspaces/test-containers-demo",
+  // "dockerComposeFile": "compose.yml",
+  // "service": "app",
+  // "workspaceFolder": "/workspaces/test-containers-demo",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": "false",
@@ -14,14 +15,16 @@
     "vscode": {
       "settings": {
         "editor.formatOnSave": true,
-        "files.trimTrailingWhitespace": true
+        "files.trimTrailingWhitespace": true,
+        "workbench.iconTheme": "monokai-pro-icons"
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "firsttris.vscode-jest-runner",
         "humao.rest-client",
-        "ryanluker.vscode-coverage-gutters"
+        "ryanluker.vscode-coverage-gutters",
+        "monokai.theme-monokai-pro-vscode"
       ]
     }
   },

@@ -1,8 +1,8 @@
 // 02_todos.no-containers.test.js (sin contenedores)
 // Requiere Postgres local disponible en las credenciales definidas en 01_setEnv.js
 import request from 'supertest';
-import { initDb, closePool } from '../src/db.js';
-import app from '../src/app.js';
+import { initDb, closePool } from '../../src/db.js';
+import app from '../../src/app.js';
 
 beforeAll(async () => {
   await initDb();
