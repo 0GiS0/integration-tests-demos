@@ -7,10 +7,10 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "npm run test:test-containers",
-    "test:test-containers": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
-    "test:legacy:docker-compose": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.docker-compose.config.js --runInBand",
-    "test:legacy:no-containers": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.no-containers.config.js --runInBand",
-    "test:mock": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.mocks.config.js --runInBand"
+    "test:test-containers": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --runInBand --reporters=default --reporters=jest-junit",
+    "test:legacy:docker-compose": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.docker-compose.config.js --runInBand --reporters=default --reporters=jest-junit",
+    "test:legacy:no-containers": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.no-containers.config.js --runInBand --reporters=default --reporters=jest-junit",
+    "test:mock": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --config jest.mocks.config.js --runInBand --reporters=default --reporters=jest-junit"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "@testcontainers/postgresql": "^11.6.0",
     "cross-env": "^10.0.0",
     "jest": "^30.1.3",
+    "jest-junit": "^16.0.0",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
     "testcontainers": "^11.6.0"
@@ -34,5 +35,13 @@
     "testMatch": [
       "**/tests-test-containers/*.test-containers.int.test.js"
     ]
+  },
+  "jest-junit": {
+    "outputDirectory": "./test-results",
+    "outputName": "junit.xml",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}",
+    "ancestorSeparator": " › ",
+    "usePathForSuiteName": true
   }
 }

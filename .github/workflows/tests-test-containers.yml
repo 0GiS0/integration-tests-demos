@@ -9,6 +9,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,3 +31,24 @@ jobs:
           NODE_ENV: test
           NODE_OPTIONS: --experimental-vm-modules
         run: npm run test:test-containers
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: '🧪🐳 Test-Containers Results'
+          path: 'test-results/junit.xml'
+          reporter: jest-junit
+          fail-on-error: 'false'
+
+      - name: Add Test Summary to PR
+        if: always()
+        run: |
+          echo "## 🧪🐳 Test-Containers Results" >> $GITHUB_STEP_SUMMARY
+          if [ -f "test-results/junit.xml" ]; then
+            echo "✅ Tests ejecutados correctamente" >> $GITHUB_STEP_SUMMARY
+            echo "📁 Archivo de resultados: \`test-results/junit.xml\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ No se pudo generar el archivo de resultados" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
