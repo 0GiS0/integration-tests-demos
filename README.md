@@ -1,12 +1,20 @@
 # 🧪 Diferentes enfoques para pruebas de integración con Postgres
 
-[![🧪🐳 Test‑Containers](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-test-containers.yml?branch=main&label=Test%E2%80%91Containers&logo=docker)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-test-containers.yml)
-[![🐳 docker-compose](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-docker-compose.yml?branch=main&label=docker%E2%80%91compose&logo=docker)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-docker-compose.yml)
-[![🖥️ No Containers](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-no-containers.yml?branch=main&label=No%20Containers&logo=postgresql)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-no-containers.yml)
-[![🧪🤡 Mocks](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-mocks.yml?branch=main&label=mocks&logo=jest)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-mocks.yml)
-[![🧪🚀 GitHub Services](https://img.shields.io/github/actions/workflow/status/0GiS0/integration-tests-demos/tests-github-actions-services.yml?branch=main&label=GitHub%20Services&logo=github)](https://github.com/0GiS0/integration-tests-demos/actions/workflows/tests-github-actions-services.yml)
+<div align="center">
 
-¡Hola developer 👋🏻! Este proyecto es un ejemplo mínimo de una API en Node.js (Express) que se integra con Postgres. El objetivo es mostrar diferentes enfoques para pruebas de integración con Postgres.
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UC140iBrEZbOtvxWsJ-Tb0lQ?style=for-the-badge&logo=youtube&logoColor=white&color=red)](https://www.youtube.com/c/GiselaTorres?sub_confirmation=1)
+[![GitHub followers](https://img.shields.io/github/followers/0GiS0?style=for-the-badge&logo=github&logoColor=white)](https://github.com/0GiS0)
+[![LinkedIn Follow](https://img.shields.io/badge/LinkedIn-Sígueme-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/giselatorresbuitrago/)
+[![X Follow](https://img.shields.io/badge/X-Sígueme-black?style=for-the-badge&logo=x&logoColor=white)](https://twitter.com/0GiS0)
+
+</div>
+
+¡Hola developer 👋🏻! Este proyecto es un ejemplo mínimo de una API en Node.js (Express) que se integra con Postgres. El objetivo es mostrar diferentes enfoques para pruebas de integración con Postgres, mostradas en mi vídeo [La mejor forma de testear tu aplicación ➡️ Testcontainers 🧪📦 | Cap.16](https://youtu.be/FxzMdSfhitE)
+
+<a href="https://youtu.be/FxzMdSfhitE">
+ <img src="https://img.youtube.com/vi/FxzMdSfhitE/maxresdefault.jpg" alt="La mejor forma de testear tu aplicación ➡️ Testcontainers 🧪📦 | Cap.16" width="100%" />
+</a>
+
 
 ## 🤔 ¿Por qué son importantes las pruebas de integración?
 
