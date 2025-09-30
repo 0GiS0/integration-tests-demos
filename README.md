@@ -22,7 +22,7 @@ Las pruebas de integración son cruciales para asegurar que los distintos compon
 
 El reto es encontrar un equilibrio entre:
 
-- **Fidelidad**: Usar una base de datos real (Postgres), en este ejemplo, en lugar de mocks. Pero podría ser cualquier otro servicio (como por ejemplo caché, cola de mensajería, etc.)
+- **Fidelidad**: Usar una base de datos real (Postgres), en este ejemplo, en lugar de mocks. Pero podría ser cualquier otro servicio, como por ejemplo caché, cola de mensajería, etc.
 - **Reproducibilidad**: Asegurar que las pruebas se comporten igual en cualquier entorno (local, CI, etc.).
 - **Simplicidad**: Minimizar la complejidad de configuración y mantenimiento.
 
