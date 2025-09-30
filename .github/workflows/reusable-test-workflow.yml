@@ -59,7 +59,7 @@ jobs:
         run: ${{ inputs.test-command }}
 
       - name: 📊 Publish Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: always()
         with:
           name: "${{ inputs.test-emoji }} ${{ inputs.test-name }} Results"
