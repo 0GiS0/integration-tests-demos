@@ -91,16 +91,15 @@ Este proyecto utiliza un **workflow reusable** centralizado (`.github/workflows/
 - 📝 Sumario visual con tablas y emojis generado por `scripts/generate-test-summary.mjs`
 - ⚙️ Configuración por parámetros: comando, nombre, emojis, versión Node
 
-**Workflows individuales (solo ~10 líneas cada uno):**
+**Workflows individuales:**
 
-- 🧪🐳 `tests-test-containers.yml`: Test-Containers (recomendado)
-- 🐳 `tests-docker-compose.yml`: Docker Compose
-- 🖥️ `tests-no-containers.yml`: Sin contenedores (Postgres local)
+- 🖥️ `tests-github-actions-services.yml`: Este sería el que usaríamos si tenemos una fuerte dependecia de un servicio local/remoto en unos test, digamos, tradicionales. Podemos aprovecharnos de que en GitHub Actions podemos usar una sección llamada *services*, que nos permite ejecutar los servicios en contenedores antes de que se ejecute el flujo.
 - 🧪🤡 `tests-mocks.yml`: Tests con mocks
+- 🐳 `tests-docker-compose.yml`: Docker Compose
+- 🧪🐳 `tests-test-containers.yml`: Usando Test containers
 
 
 **Resumen:** Usa **Test-Containers** para la mayoría de casos, **Mocks** para feedback rápido, y los otros enfoques para casos específicos.
-
 
 <div align="center">
 
