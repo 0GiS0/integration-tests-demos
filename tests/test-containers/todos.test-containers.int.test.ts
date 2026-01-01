@@ -1,0 +1,46 @@
+// Prueba de integración con TEST-CONTAINERS (Postgres efímero)
+import { afterAll, beforeAll, expect, it } from '@jest/globals';
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from '@testcontainers/postgresql';
+import request from 'supertest';
+import type { Todo } from '../../schemas/todos.schema.js';
+import app from '../../src/app.js';
+import { closePool, initDb } from '../../src/db.js';
+
+let container: StartedPostgreSqlContainer;
+
+beforeAll(async () => {
+  container = await new PostgreSqlContainer('postgres:16-alpine').start();
+  const uri = container.getConnectionUri();
+  process.env.DATABASE_URL = uri;
+  await initDb();
+}, 120000);
+
+afterAll(async () => {
+  await closePool();
+  if (container) {
+    await container.stop();
+  }
+}, 120000);
+
+it('TEST-CONTAINERS: GET /health devuelve ok', async () => {
+  const res = await request(app).get('/health').expect(200);
+  expect(res.body).toEqual({ status: 'ok' });
+});
+
+it('TEST-CONTAINERS: POST /todos crea y GET /todos incluye la tarea creada', async () => {
+  const title = `Task ${Date.now()}`;
+  const postRes = await request(app).post('/todos').send({ title }).expect(201);
+  expect(postRes.body).toMatchObject({ title, completed: false });
+
+  const getRes = await request(app).get('/todos').expect(200);
+  const found = getRes.body.find((t: Todo) => t.title === title);
+  expect(found).toBeTruthy();
+});
+
+it('TEST-CONTAINERS: GET /todos devuelve array de todos', async () => {
+  const getRes = await request(app).get('/todos').expect(200);
+  expect(Array.isArray(getRes.body)).toBe(true);
+});
