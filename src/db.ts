@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-let pool;
+let pool: Pool | undefined;
 
 export function getPool() {
   if (!pool) {
@@ -19,7 +19,7 @@ export function getPool() {
   return pool;
 }
 
-export async function query(text, params) {
+export async function query(text: string, params?: any[]) {
   const p = getPool();
   return p.query(text, params);
 }

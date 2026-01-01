@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import app from './app.js';
-import { initDb } from './db.js';
+import app from './app';
+import { initDb } from './db';
 
 dotenv.config();
 

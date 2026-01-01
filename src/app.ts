@@ -1,5 +1,6 @@
 import express from 'express';
-import todosRouter from './routes/todos.js';
+import todosRouter from './routes/todos';
+import type { Request, Response } from 'express';
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use('/todos', todosRouter);
 
 // Basic error handler
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response) => {
   console.error(err);
   res.status(500).json({ error: 'Internal Server Error' });
 });

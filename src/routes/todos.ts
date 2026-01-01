@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { query } from '../db.js';
+import { query } from '../db';
+import { createTodoSchema } from '../../schemas/todos.schema';
 
 const router = Router();
 
@@ -16,10 +17,16 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const { title } = req.body || {};
-    if (!title || typeof title !== 'string') {
-      return res.status(400).json({ error: 'title is required' });
+    const result = createTodoSchema.safeParse(req.body);
+    
+    if (!result.success) {
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: result.error.format() 
+      });
     }
+
+    const { title } = result.data;
     const { rows } = await query(
       'INSERT INTO todos (title) VALUES ($1) RETURNING id, title, completed, created_at',
       [title]
